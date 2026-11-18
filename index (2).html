@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E7C86">
+<title>حصصي</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F4F6F8;--card:#FFFFFF;--ink:#101828;--ink2:#344054;--muted:#5B6474;--line:#E4E7EC;--soft:#F1F3F6;
+  --ac:#0E7C86;--acd:#0B6B74;--act:#E6F4F5;
+  --ok:#067647;--okt:#ECFDF3;--bad:#B42318;--badt:#FEF3F2;--blue:#1849A9;--bluet:#EFF4FF;--warn:#B54708;--warnt:#FFF6ED;
+  --r:16px;--safe:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;font-size:15px}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+#app{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:calc(96px + var(--safe))}
+.hdr{padding:24px 20px 8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hdr h1{margin:2px 0 0;font-size:23px;font-weight:700}
+.sub{font-size:13px;color:var(--muted)}
+.topbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:16px 16px 14px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.ttl{font-size:18px;font-weight:700}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:none;background:var(--soft);color:var(--ink2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stats{padding:12px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--card);border-radius:var(--r);padding:14px 12px;display:flex;flex-direction:column;gap:4px}
+.stat .l{font-size:12px;color:var(--muted)}
+.stat .v{font-size:21px;font-weight:700}
+.stat.hi{background:var(--ac);color:#fff}.stat.hi .l{color:#D5F0F2}
+.sec{padding:18px 20px 8px;display:flex;justify-content:space-between;align-items:center}
+.sec h2{margin:0;font-size:17px;font-weight:700}
+.link{background:none;border:none;color:var(--acd);font-weight:600;font-size:13px;padding:8px 0}
+.list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--card);border-radius:var(--r);padding:14px;display:flex;gap:14px;align-items:center;border:none;width:100%;text-align:right}
+.tile{width:62px;height:56px;border-radius:12px;background:var(--act);color:var(--acd);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.tile small{font-size:11px;font-weight:500}
+.tile.ds{background:var(--warnt);color:var(--warn)}
+.cname{font-size:15px;font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted);margin-top:5px}
+.chip{background:var(--soft);border-radius:999px;padding:2px 10px;color:var(--ink2);font-size:12px}
+.chip.ac{background:var(--act);color:var(--acd)}
+.bars{display:inline-flex;gap:2px;align-items:flex-end}
+.bars i{width:4px;border-radius:2px;background:#D0D5DD;display:block}
+.bars i:nth-child(1){height:6px}.bars i:nth-child(2){height:9px}.bars i:nth-child(3){height:12px}
+.bars i.on{background:var(--acd)}
+.st{font-size:12px;font-weight:600}
+.empty{margin:10px 20px;background:var(--card);border-radius:var(--r);padding:28px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
+.btn{height:48px;border-radius:14px;border:none;background:var(--ac);color:#fff;font-weight:700;font-size:15px;padding:0 22px}
+.btn.sec2{background:var(--act);color:var(--acd)}
+.btn.ghost{background:transparent;border:1.5px dashed #9AA4B2;color:var(--ink2);font-weight:600}
+.btn.danger{background:var(--badt);color:var(--bad)}
+.btn.full{width:100%}
+.quick{padding:16px 20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.chips{padding:8px 20px 12px;display:flex;gap:8px;overflow-x:auto}
+.fchip{border:none;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;background:var(--card);color:var(--ink2);white-space:nowrap;min-height:36px}
+.fchip.on{background:var(--ink);color:#fff}
+.search{margin:6px 20px 12px;position:relative}
+.search input{width:100%;height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 44px 0 14px;outline:none}
+.search input:focus{border-color:var(--ac)}
+.search svg{position:absolute;right:14px;top:14px;color:var(--muted)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.pricebar{display:flex;justify-content:space-between;align-items:center;background:var(--act);border-radius:12px;padding:8px 14px}
+.pricebar b{color:var(--acd);font-size:16px}
+.mini{border:none;background:#fff;color:var(--acd);border-radius:8px;padding:0 12px;min-height:34px;font-size:12px;font-weight:600}
+.counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center;font-size:12px}
+.counts div{border-radius:10px;padding:8px 4px}
+.counts b{font-size:16px}
+.c-ok{background:var(--okt);color:var(--ok)}.c-bad{background:var(--badt);color:var(--bad)}.c-blue{background:var(--bluet);color:var(--blue)}
+.srow{background:var(--card);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.srow .nm{flex:1;font-size:15px;font-weight:600;min-width:0}
+.tg{min-width:66px;height:42px;border-radius:10px;border:none;font-size:13px;font-weight:600}
+.tg.p{background:var(--okt);color:var(--ok)}.tg.a{background:var(--badt);color:var(--bad)}.tg.u{background:var(--soft);color:var(--muted)}
+.tg.paid{background:var(--blue);color:#fff}.tg.unpaid{background:#fff;color:var(--warn);border:1.5px solid #F5C08A}
+.tg.ph{visibility:hidden}
+.footer{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding:12px 16px calc(14px + var(--safe))}
+.footer .in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.footer .l{font-size:12px;color:var(--muted)}.footer .v{font-size:20px;font-weight:700}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding-bottom:var(--safe)}
+nav.tabs .in{max-width:560px;margin:0 auto;height:68px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--muted);font-size:12px}
+nav.tabs a.on{color:var(--acd);font-weight:700}
+.fab{position:fixed;bottom:calc(84px + var(--safe));left:max(20px,calc(50% - 260px));z-index:6;width:58px;height:58px;border-radius:18px;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(14,124,134,.35)}
+.box{margin:0 20px;background:var(--card);border-radius:var(--r);padding:14px}
+.kv{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--soft);font-size:14px}
+.kv:last-child{border-bottom:none}
+.kv span{color:var(--muted)}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--soft);font-size:14px;gap:8px}
+.hist:last-child{border-bottom:none}
+.banner{margin:4px 20px 4px;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:13px;background:var(--warnt);color:var(--warn);border:none;width:calc(100% - 40px);text-align:right}
+.banner.okb{background:var(--okt);color:var(--ok)}
+/* sheet */
+.ov{position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fd .15s}
+.sheet{background:var(--card);width:100%;max-width:560px;border-radius:22px 22px 0 0;max-height:92vh;overflow-y:auto;padding:8px 18px calc(18px + var(--safe));animation:up .2s ease-out}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:#D0D5DD;margin:6px auto 12px}
+.sheet h3{margin:0 0 14px;font-size:18px}
+@keyframes up{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
+@keyframes fd{from{opacity:0}to{opacity:1}}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.fld label{font-size:13px;font-weight:600;color:var(--ink2)}
+.fld input,.fld select,.fld textarea{height:48px;border-radius:12px;border:1px solid var(--line);padding:0 12px;background:#fff;outline:none;width:100%}
+.fld textarea{height:80px;padding:10px 12px;resize:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--ac)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:#fff;border-radius:10px;min-height:42px;padding:0 14px;font-size:14px;font-weight:600;color:var(--ink2)}
+.seg button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.hint{font-size:12px;color:var(--muted)}
+.acts{display:flex;gap:10px;margin-top:6px}
+.acts .btn{flex:1}
+.pick{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto}
+.pick label{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:14px;min-height:48px}
+.pick input{width:20px;height:20px;accent-color:var(--ac)}
+.toast{position:fixed;bottom:calc(100px + var(--safe));left:50%;transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;border-radius:12px;padding:12px 18px;font-size:14px;max-width:90vw;animation:fd .2s}
+.danger-t{color:var(--bad)}
+.monthnav{display:flex;align-items:center;justify-content:space-between;margin:6px 20px 0;background:var(--card);border-radius:14px;padding:6px}
+.monthnav b{font-size:15px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="layer"></div>
+<script>
+'use strict';
+/* ================= قاعدة البيانات (محلية على الجهاز) =================
+   كل قسم في مخزن لوحده: groups / students / sessions / attendance / settings
+   ولا يوجد حذف نهائي للطلاب أو المجموعات — أرشفة فقط علشان الحسابات */
+const DB_NAME='hesasy-db', DB_VER=1, STORES=['groups','students','sessions','attendance','settings'];
+let db; const S={groups:[],students:[],sessions:[],attendance:[],settings:{}};
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);
+  r.onupgradeneeded=()=>{const d=r.result;
+    if(!d.objectStoreNames.contains('groups'))d.createObjectStore('groups',{keyPath:'id'});
+    if(!d.objectStoreNames.contains('students'))d.createObjectStore('students',{keyPath:'id'});
+    if(!d.objectStoreNames.contains('sessions')){const s=d.createObjectStore('sessions',{keyPath:'id'});s.createIndex('groupId','groupId');}
+    if(!d.objectStoreNames.contains('attendance')){const a=d.createObjectStore('attendance',{keyPath:'id'});a.createIndex('sessionId','sessionId');a.createIndex('studentId','studentId');}
+    if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+function tx(store,mode,fn){return new Promise((res,rej)=>{const t=db.transaction(store,mode);const st=t.objectStore(store);const out=fn(st);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:out);t.onerror=()=>rej(t.error);});}
+const getAll=s=>new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});
+async function put(store,obj){await tx(store,'readwrite',st=>st.put(obj));
+  if(store==='settings'){S.settings[obj.key]=obj.value;return;}
+  const arr=S[store];const i=arr.findIndex(x=>x.id===obj.id);if(i>=0)arr[i]=obj;else arr.push(obj);}
+async function putMany(store,list){await tx(store,'readwrite',st=>{list.forEach(o=>st.put(o));});
+  list.forEach(obj=>{const arr=S[store];const i=arr.findIndex(x=>x.id===obj.id);if(i>=0)arr[i]=obj;else arr.push(obj);});}
+async function loadAll(){for(const s of STORES){const rows=await getAll(s);if(s==='settings'){S.settings={};rows.forEach(r=>S.settings[r.key]=r.value);}else S[s]=rows;}}
+const setSetting=(key,value)=>put('settings',{key,value});
+
+/* ================= أدوات ================= */
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const N=x=>Number(x||0).toLocaleString('ar-EG');
+const money=x=>N(x)+' ج.م';
+const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const pad=n=>String(n).padStart(2,'0');
+const dkey=(d=new Date())=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>dkey();
+function fmtDate(k){const [y,m,d]=k.split('-').map(Number);const dt=new Date(y,m-1,d);return DAYS[dt.getDay()]+' '+N(d)+' '+MONTHS[m-1];}
+function fmtTime(t){if(!t)return{t:'—',p:''};let [h,m]=t.split(':').map(Number);const p=h>=12?'م':'ص';h=h%12||12;return{t:N(h)+':'+N(m).padStart(2,'٠'),p};}
+const LEVELS=['مبتدئ','متوسط','قوي'];
+const GRADES=['الأول','الثاني','الثالث','الرابع','الخامس','السادس'];
+function groupTitle(g){if(g.name)return g.name;let s=g.subject;if(g.grade||g.stage)s+=' — '+(g.grade?g.grade+' ':'')+(g.stage||'');return s.trim();}
+function levelBars(g){if(g.type!=='تأسيس')return'';const n=LEVELS.indexOf(g.level)+1;return '<span class="bars" aria-hidden="true">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';}
+function groupKind(g){return g.type==='تأسيس'?('تأسيس · '+(g.level||'')):'عادية';}
+const activeGroups=()=>S.groups.filter(g=>!g.archived);
+const activeStudents=()=>S.students.filter(s=>!s.archived);
+const studentsOf=gid=>activeStudents().filter(s=>(s.groupIds||[]).includes(gid)).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+const groupById=id=>S.groups.find(g=>g.id===id);
+const studentById=id=>S.students.find(s=>s.id===id);
+const sessionFor=(gid,date)=>S.sessions.find(s=>s.groupId===gid&&s.date===date);
+const attOf=sid=>S.attendance.filter(a=>a.sessionId===sid);
+const unpaidOf=stid=>S.attendance.filter(a=>a.studentId===stid&&a.present&&!a.paid);
+const sessionPrice=a=>{const s=S.sessions.find(x=>x.id===a.sessionId);return s?Number(s.price)||0:0;};
+const ICON={
+ back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
+ plus:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+ gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+ edit:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+ search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+ home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+ groups:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+ students:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.3 0 4 1.5 4.5 4"/></svg>',
+ money:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h3"/></svg>',
+ shield:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/></svg>'
+};
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+
+/* ================= النوافذ المنبثقة ================= */
+const layer=document.getElementById('layer');
+function sheet(html,onMount){layer.innerHTML=`<div class="ov" data-close><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
+  const ov=layer.firstElementChild;ov.addEventListener('click',e=>{if(e.target===ov)closeSheet();});
+  onMount&&onMount(ov.querySelector('.sheet'));}
+function closeSheet(){layer.innerHTML='';}
+function confirmBox(title,text,okLabel='تأكيد',danger=false){return new Promise(res=>{
+  sheet(`<h3>${esc(title)}</h3><p style="margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.7">${esc(text)}</p>
+  <div class="acts"><button class="btn sec2" id="cNo">إلغاء</button><button class="btn ${danger?'danger':''}" id="cOk">${esc(okLabel)}</button></div>`,el=>{
+    el.querySelector('#cNo').onclick=()=>{closeSheet();res(false);};
+    el.querySelector('#cOk').onclick=()=>{closeSheet();res(true);};});});}
+function segBind(root){root.querySelectorAll('.seg').forEach(sg=>{const multi=sg.dataset.multi==='1';
+  sg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();
+    if(multi)b.classList.toggle('on');else{sg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
+    sg.dispatchEvent(new Event('change'));});});}
+const segVal=el=>{const b=el.querySelector('button.on');return b?b.dataset.v:'';};
+const segVals=el=>[...el.querySelectorAll('button.on')].map(b=>b.dataset.v);
+const segHtml=(id,opts,val,multi)=>`<div class="seg" id="${id}" ${multi?'data-multi="1"':''}>${opts.map(o=>{const v=typeof o==='object'?o.v:o,l=typeof o==='object'?o.l:o;const on=multi?(val||[]).map(String).includes(String(v)):String(val)===String(v);return `<button type="button" data-v="${esc(v)}" class="${on?'on':''}">${esc(l)}</button>`;}).join('')}</div>`;
+
+/* ================= نموذج المجموعة ================= */
+function groupForm(g){const isNew=!g;g=g||{subject:'عربي',stage:'ابتدائي',grade:'',type:'عادية',level:'مبتدئ',days:[],time:'16:00',price:S.settings.defaultPrice||50,name:''};
+  sheet(`<h3>${isNew?'مجموعة جديدة':'تعديل المجموعة'}</h3>
+  <div class="fld"><label>المادة</label>${segHtml('fSub',['عربي','دراسات'],g.subject)}</div>
+  <div class="fld"><label>المرحلة <span class="hint">(اختياري)</span></label>${segHtml('fStage',[{v:'',l:'بدون'},'ابتدائي','إعدادي'],g.stage)}</div>
+  <div class="fld"><label>الصف <span class="hint">(اختياري)</span></label>${segHtml('fGrade',[{v:'',l:'بدون'},...GRADES],g.grade)}</div>
+  <div class="fld"><label>نوع المجموعة</label>${segHtml('fType',['عادية','تأسيس'],g.type)}</div>
+  <div class="fld" id="lvlWrap" style="${g.type==='تأسيس'?'':'display:none'}"><label>مستوى التأسيس</label>${segHtml('fLevel',LEVELS,g.level||'مبتدئ')}</div>
+  <div class="fld"><label>أيام المجموعة</label>${segHtml('fDays',DAYS.map((d,i)=>({v:i,l:d})),g.days,true)}</div>
+  <div class="row" style="gap:10px;align-items:flex-start">
+   <div class="fld grow"><label for="fTime">المعاد</label><input id="fTime" type="time" value="${esc(g.time)}"></div>
+   <div class="fld grow"><label for="fPrice">سعر الحصة (ج.م)</label><input id="fPrice" type="number" inputmode="numeric" min="0" value="${esc(g.price)}"></div>
+  </div>
+  <div class="fld"><label for="fName">اسم مخصص <span class="hint">(اختياري — لو سبته فاضي هيتكتب تلقائي)</span></label><input id="fName" value="${esc(g.name)}" placeholder="مثلًا: مجموعة السبت الصبح"></div>
+  <div class="acts"><button class="btn sec2" id="gCancel">إلغاء</button><button class="btn" id="gSave">حفظ</button></div>
+  ${isNew?'':'<button class="btn danger full" id="gArch" style="margin-top:10px">أرشفة المجموعة</button>'}`,el=>{
+    segBind(el);
+    el.querySelector('#fType').addEventListener('change',e=>{el.querySelector('#lvlWrap').style.display=segVal(e.currentTarget)==='تأسيس'?'':'none';});
+    el.querySelector('#gCancel').onclick=closeSheet;
+    el.querySelector('#gSave').onclick=async()=>{
+      const o=Object.assign({},g,{id:g.id||uid(),createdAt:g.createdAt||Date.now(),subject:segVal(el.querySelector('#fSub')),stage:segVal(el.querySelector('#fStage')),grade:segVal(el.querySelector('#fGrade')),
+        type:segVal(el.querySelector('#fType')),level:segVal(el.querySelector('#fType'))==='تأسيس'?segVal(el.querySelector('#fLevel')):'',
+        days:segVals(el.querySelector('#fDays')).map(Number),time:el.querySelector('#fTime').value,price:Number(el.querySelector('#fPrice').value)||0,name:el.querySelector('#fName').value.trim(),archived:false});
+      await put('groups',o);closeSheet();toast(isNew?'اتضافت المجموعة':'اتحفظت التعديلات');if(isNew)go('#group/'+o.id);else render();};
+    const ar=el.querySelector('#gArch');if(ar)ar.onclick=async()=>{closeSheet();
+      if(await confirmBox('أرشفة المجموعة؟','المجموعة هتختفي من القوائم، بس كل الحصص والمدفوعات القديمة هتفضل محفوظة في الحسابات.','أرشفة',true)){
+        await put('groups',Object.assign({},g,{archived:true}));toast('اتأرشفت المجموعة');go('#groups');}};});}
+
+/* ================= نموذج الطالب ================= */
+function studentForm(st,presetGroup){const isNew=!st;st=st||{name:'',phone:'',groupIds:presetGroup?[presetGroup]:[],notes:''};
+  const gs=activeGroups();
+  sheet(`<h3>${isNew?'طالب جديد':'تعديل بيانات الطالب'}</h3>
+  <div class="fld"><label for="sName">اسم الطالب</label><input id="sName" value="${esc(st.name)}" autocomplete="off"></div>
+  <div class="fld"><label for="sPhone">رقم التليفون <span class="hint">(اختياري)</span></label><input id="sPhone" type="tel" inputmode="tel" value="${esc(st.phone)}"></div>
+  <div class="fld"><label>المجموعات</label>${gs.length?`<div class="pick">${gs.map(g=>`<label><input type="checkbox" value="${g.id}" ${st.groupIds.includes(g.id)?'checked':''}> <span class="grow">${esc(groupTitle(g))}</span><span class="hint">${esc(groupKind(g))}</span></label>`).join('')}</div>`:'<div class="hint">مفيش مجموعات لسه — تقدر تضيفه دلوقتي وتحطه في مجموعة بعدين.</div>'}</div>
+  <div class="fld"><label for="sNotes">ملاحظات <span class="hint">(اختياري)</span></label><textarea id="sNotes">${esc(st.notes)}</textarea></div>
+  <div class="acts"><button class="btn sec2" id="sCancel">إلغاء</button><button class="btn" id="sSave">حفظ</button></div>
+  ${isNew?'':'<button class="btn danger full" id="sArch" style="margin-top:10px">أرشفة الطالب</button>'}`,el=>{
+    setTimeout(()=>{if(isNew)el.querySelector('#sName').focus();},250);
+    el.querySelector('#sCancel').onclick=closeSheet;
+    el.querySelector('#sSave').onclick=async()=>{const name=el.querySelector('#sName').value.trim();if(!name){toast('اكتب اسم الطالب');return;}
+      const o=Object.assign({},st,{id:st.id||uid(),createdAt:st.createdAt||Date.now(),name,phone:el.querySelector('#sPhone').value.trim(),notes:el.querySelector('#sNotes').value.trim(),
+        groupIds:[...el.querySelectorAll('.pick input:checked')].map(i=>i.value),archived:false});
+      await put('students',o);closeSheet();toast(isNew?'اتضاف الطالب':'اتحفظت التعديلات');render();};
+    const ar=el.querySelector('#sArch');if(ar)ar.onclick=async()=>{closeSheet();
+      if(await confirmBox('أرشفة الطالب؟','هيتشال من المجموعات والقوائم، وحضوره ومدفوعاته القديمة هتفضل محفوظة.','أرشفة',true)){
+        await put('students',Object.assign({},st,{archived:true}));toast('اتأرشف الطالب');go('#students');}};});}
+
+/* إضافة طلاب موجودين لمجموعة */
+function addExistingToGroup(gid){const cand=activeStudents().filter(s=>!(s.groupIds||[]).includes(gid)).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  sheet(`<h3>إضافة طلاب للمجموعة</h3>
+  <div class="search" style="margin:0 0 10px"><input id="q" placeholder="دوّر بالاسم"><span>${ICON.search}</span></div>
+  ${cand.length?`<div class="pick" id="pk">${cand.map(s=>`<label data-n="${esc(s.name)}"><input type="checkbox" value="${s.id}"> <span class="grow">${esc(s.name)}</span><span class="hint">${esc((s.groupIds||[]).map(id=>groupById(id)).filter(Boolean).map(groupTitle).join('، ')||'بدون مجموعة')}</span></label>`).join('')}</div>`:'<div class="hint" style="margin-bottom:10px">كل الطلاب موجودين في المجموعة دي بالفعل.</div>'}
+  <div class="acts" style="margin-top:14px"><button class="btn sec2" id="newSt">طالب جديد</button><button class="btn" id="addSel">إضافة المختارين</button></div>`,el=>{
+    const q=el.querySelector('#q');q.oninput=()=>{const v=q.value.trim();el.querySelectorAll('#pk label').forEach(l=>{l.style.display=l.dataset.n.includes(v)?'':'none';});};
+    el.querySelector('#newSt').onclick=()=>{closeSheet();studentForm(null,gid);};
+    el.querySelector('#addSel').onclick=async()=>{const ids=[...el.querySelectorAll('#pk input:checked')].map(i=>i.value);if(!ids.length){toast('اختار طالب واحد على الأقل');return;}
+      const list=ids.map(id=>{const s=studentById(id);return Object.assign({},s,{groupIds:[...(s.groupIds||[]),gid]});});
+      await putMany('students',list);closeSheet();toast('اتضاف '+N(ids.length)+' طالب');render();};});}
+
+/* نقل طالب من مجموعة لمجموعة */
+function moveStudent(stid,fromGid){const st=studentById(stid);const opts=activeGroups().filter(g=>g.id!==fromGid&&!(st.groupIds||[]).includes(g.id));
+  if(!opts.length){toast('مفيش مجموعة تانية ينفع يتنقل لها');return;}
+  sheet(`<h3>نقل ${esc(st.name)}</h3><p class="hint" style="margin:-6px 0 12px">من: ${esc(groupTitle(groupById(fromGid)))}</p>
+  <div class="pick">${opts.map(g=>`<label><input type="radio" name="mv" value="${g.id}"> <span class="grow">${esc(groupTitle(g))}</span><span class="hint">${esc(groupKind(g))}</span></label>`).join('')}</div>
+  <div class="acts" style="margin-top:14px"><button class="btn sec2" id="mvC">إلغاء</button><button class="btn" id="mvOk">نقل</button></div>`,el=>{
+    el.querySelector('#mvC').onclick=closeSheet;
+    el.querySelector('#mvOk').onclick=async()=>{const r=el.querySelector('input[name=mv]:checked');if(!r){toast('اختار المجموعة');return;}
+      const ids=(st.groupIds||[]).filter(x=>x!==fromGid).concat(r.value);await put('students',Object.assign({},st,{groupIds:ids}));closeSheet();toast('اتنقل الطالب');render();};});}
+
+/* تحصيل مستحقات طالب */
+function collectFor(stid){const st=studentById(stid);const list=unpaidOf(stid).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!list.length){toast('مفيش مستحقات على الطالب');return;}
+  sheet(`<h3>تحصيل من ${esc(st.name)}</h3><p class="hint" style="margin:-6px 0 12px">اختار الحصص اللي دفعها</p>
+  <div class="pick">${list.map(a=>`<label><input type="checkbox" value="${a.id}" checked> <span class="grow">${esc(fmtDate(a.date))}<br><span class="hint">${esc(groupTitle(groupById(a.groupId)||{subject:'—'}))}</span></span><b>${money(sessionPrice(a))}</b></label>`).join('')}</div>
+  <div class="kv" style="margin-top:10px"><span>الإجمالي</span><b id="cTot"></b></div>
+  <div class="acts"><button class="btn sec2" id="cC">إلغاء</button><button class="btn" id="cOk">تسجيل الدفع</button></div>`,el=>{
+    const upd=()=>{const ids=[...el.querySelectorAll('.pick input:checked')].map(i=>i.value);el.querySelector('#cTot').textContent=money(list.filter(a=>ids.includes(a.id)).reduce((s,a)=>s+sessionPrice(a),0));};
+    el.querySelector('.pick').addEventListener('change',upd);upd();
+    el.querySelector('#cC').onclick=closeSheet;
+    el.querySelector('#cOk').onclick=async()=>{const ids=[...el.querySelectorAll('.pick input:checked')].map(i=>i.value);if(!ids.length){toast('اختار حصة');return;}
+      const now=Date.now();await putMany('attendance',list.filter(a=>ids.includes(a.id)).map(a=>Object.assign({},a,{paid:true,amount:sessionPrice(a),paidAt:now})));
+      closeSheet();toast('اتسجل الدفع');render();};});}
+
+/* ================= الشاشات ================= */
+const app=document.getElementById('app');
+let route='#home';let ui={gFilter:'all',sQuery:'',month:null};
+let draft=null; // مسودة الحصة الحالية
+function go(h){if(location.hash===h)render();else location.hash=h;}
+window.addEventListener('hashchange',()=>{draft=null;render();});
+
+function tabs(active){const t=[['#home','الرئيسية','home'],['#groups','المجموعات','groups'],['#students','الطلاب','students'],['#accounts','الحسابات','money']];
+  return `<nav class="tabs"><div class="in">${t.map(([h,l,i])=>`<a href="${h}" class="${active===h?'on':''}">${ICON[i]}${l}</a>`).join('')}</div></nav>`;}
+
+function groupCard(g,dateKey){const tm=fmtTime(g.time);const cnt=studentsOf(g.id).length;let status='';
+  if(dateKey){const ss=sessionFor(g.id,dateKey);status=ss?'<span class="st" style="color:var(--ok)">اتسجلت ✓</span>':'<span class="st" style="color:var(--warn)">لسه</span>';}
+  else status=`<span class="hint">${esc((g.days||[]).map(d=>DAYS[d]).join('، ')||'بدون أيام')}</span>`;
+  return `<button class="card" data-go="#group/${g.id}"><div class="tile ${g.subject==='دراسات'?'ds':''}">${tm.t}<small>${tm.p}</small></div>
+   <div class="grow"><div class="cname">${esc(groupTitle(g))}</div><div class="meta"><span class="chip">${levelBars(g)} ${esc(groupKind(g))}</span><span>${N(cnt)} طالب</span></div></div>${dkeyStatusWrap(status)}</button>`;}
+const dkeyStatusWrap=s=>`<div style="flex-shrink:0;text-align:left;max-width:90px">${s}</div>`;
+
+function backupBanner(){const lb=S.settings.lastBackup;const has=S.students.length||S.groups.length;if(!has)return'';
+  const days=lb?Math.floor((Date.now()-lb)/864e5):null;
+  if(days===null||days>=7)return `<button class="banner" data-go="#settings">${ICON.shield}<span class="grow">${days===null?'لسه ما عملتش نسخة احتياطية — اعمل واحدة دلوقتي علشان بياناتك متضيعش':'آخر نسخة احتياطية من '+N(days)+' يوم — اعمل نسخة جديدة'}</span></button>`;
+  return '';}
+
+function vHome(){const t=today();const dow=new Date().getDay();
+  const todays=activeGroups().filter(g=>(g.days||[]).includes(dow)).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const todaysSessions=S.sessions.filter(s=>s.date===t);
+  const presentToday=S.attendance.filter(a=>a.date===t&&a.present).length;
+  const collectedToday=S.attendance.filter(a=>a.paid&&a.paidAt&&dkey(new Date(a.paidAt))===t).reduce((s,a)=>s+(Number(a.amount)||0),0);
+  const h=new Date().getHours();const greet=h<12?'صباح الخير':'مساء الخير';const nm=S.settings.teacherName?(' يا أستاذ '+S.settings.teacherName):' يا أستاذ';
+  return `<div class="hdr"><div><div class="sub">${esc(fmtDate(t))}</div><h1>${greet}${esc(nm)}</h1></div><button class="iconbtn" data-go="#settings" aria-label="الإعدادات">${ICON.gear}</button></div>
+  ${backupBanner()}
+  <div class="stats"><div class="stat"><span class="l">حصص النهارده</span><span class="v">${N(todaysSessions.length)}</span></div>
+   <div class="stat"><span class="l">حضروا</span><span class="v">${N(presentToday)}</span></div>
+   <div class="stat hi"><span class="l">المحصّل</span><span class="v">${N(collectedToday)} <small style="font-size:12px;font-weight:500">ج.م</small></span></div></div>
+  <div class="sec"><h2>مجموعات النهارده</h2><button class="link" data-go="#groups">كل المجموعات</button></div>
+  ${todays.length?`<div class="list">${todays.map(g=>groupCard(g,t)).join('')}</div>`:
+   `<div class="empty">${activeGroups().length?'مفيش مجموعات متسجلة ليوم '+DAYS[dow]+'.':'ابدأ بإضافة أول مجموعة، وبعدها ضيف الطلاب.'}<button class="btn" data-act="newGroup">+ مجموعة جديدة</button></div>`}
+  <div class="quick"><button class="btn ghost" data-act="newStudent">+ طالب جديد</button><button class="btn ghost" data-act="newGroup">+ مجموعة جديدة</button></div>
+  ${tabs('#home')}`;}
+
+function vGroups(){const f=ui.gFilter;let gs=activeGroups();
+  if(f==='عربي'||f==='دراسات')gs=gs.filter(g=>g.subject===f);else if(f==='تأسيس')gs=gs.filter(g=>g.type==='تأسيس');else if(f==='عادية')gs=gs.filter(g=>g.type!=='تأسيس');
+  gs.sort((a,b)=>groupTitle(a).localeCompare(groupTitle(b),'ar'));
+  const fc=[['all','الكل'],['عربي','عربي'],['دراسات','دراسات'],['تأسيس','تأسيس'],['عادية','عادية']];
+  return `<div class="hdr"><div><div class="sub">${N(activeGroups().length)} مجموعة</div><h1>المجموعات</h1></div></div>
+  <div class="chips">${fc.map(([v,l])=>`<button class="fchip ${f===v?'on':''}" data-gf="${v}">${l}</button>`).join('')}</div>
+  ${gs.length?`<div class="list">${gs.map(g=>groupCard(g)).join('')}</div>`:`<div class="empty">مفيش مجموعات هنا.<button class="btn" data-act="newGroup">+ مجموعة جديدة</button></div>`}
+  <button class="fab" data-act="newGroup" aria-label="مجموعة جديدة">${ICON.plus}</button>${tabs('#groups')}`;}
+
+function vGroup(id){const g=groupById(id);if(!g)return vMissing();const sts=studentsOf(id);const tm=fmtTime(g.time);
+  const sess=S.sessions.filter(s=>s.groupId===id).sort((a,b)=>b.date.localeCompare(a.date));
+  const ts=sessionFor(id,today());
+  return `<div class="topbar"><div class="row"><button class="iconbtn" data-back aria-label="رجوع">${ICON.back}</button>
+   <div class="grow"><div class="ttl">${esc(groupTitle(g))}</div><div class="sub">${esc(groupKind(g))} · ${esc((g.days||[]).map(d=>DAYS[d]).join('، ')||'بدون أيام')} · ${tm.t} ${tm.p}</div></div>
+   <button class="iconbtn" data-act="editGroup" data-id="${id}" aria-label="تعديل المجموعة">${ICON.edit}</button></div>
+   <div class="pricebar"><span class="sub" style="color:var(--acd)">سعر الحصة</span><b>${money(g.price)}</b></div></div>
+  <div style="padding:14px 20px 0"><button class="btn full" data-go="#session/${id}">${ts?'تعديل حصة النهارده':'تسجيل حصة النهارده'}</button></div>
+  <div class="sec"><h2>الطلاب (${N(sts.length)})</h2><button class="link" data-act="addToGroup" data-id="${id}">+ إضافة طلاب</button></div>
+  ${sts.length?`<div class="list">${sts.map(s=>{const u=unpaidOf(s.id).length;return `<div class="srow"><button class="avatar" style="border:none" data-go="#student/${s.id}" aria-label="ملف ${esc(s.name)}">${esc(s.name.charAt(0))}</button>
+    <button class="nm" style="all:unset;flex:1;font-weight:600;cursor:pointer" data-go="#student/${s.id}">${esc(s.name)}${u?`<div class="hint" style="color:var(--warn)">عليه ${N(u)} حصة</div>`:''}</button>
+    <button class="mini" style="background:var(--soft)" data-act="move" data-id="${s.id}" data-g="${id}">نقل</button></div>`;}).join('')}</div>`:
+   `<div class="empty">المجموعة فاضية.<button class="btn" data-act="addToGroup" data-id="${id}">+ إضافة طلاب</button></div>`}
+  <div class="sec"><h2>الحصص السابقة</h2></div>
+  ${sess.length?`<div class="box">${sess.slice(0,30).map(s=>{const at=attOf(s.id);const p=at.filter(a=>a.present).length;const col=at.filter(a=>a.paid).reduce((x,a)=>x+(Number(a.amount)||0),0);
+    return `<button class="hist" style="all:unset;display:flex;justify-content:space-between;align-items:center;width:100%;padding:10px 0;border-bottom:1px solid var(--soft);cursor:pointer" data-go="#session/${id}/${s.id}"><span><b style="font-weight:600">${esc(fmtDate(s.date))}</b><div class="hint">${N(p)} حاضر من ${N(at.length)}</div></span><span style="color:var(--acd);font-weight:700">${money(col)}</span></button>`;}).join('')}</div>`:'<div class="empty">لسه مفيش حصص متسجلة.</div>'}
+  <div style="height:20px"></div>${tabs('#groups')}`;}
+
+function vSession(gid,sid){const g=groupById(gid);if(!g)return vMissing();
+  let s=sid?S.sessions.find(x=>x.id===sid):sessionFor(gid,today());
+  if(!draft||draft.gid!==gid||draft.sid!==(s&&s.id)){
+    const base=s?s:{id:null,date:today(),price:g.price};
+    const prev=s?attOf(s.id):[];
+    const ids=new Set(studentsOf(gid).map(x=>x.id));prev.forEach(a=>ids.add(a.studentId));
+    const entries={};[...ids].forEach(i=>{const a=prev.find(x=>x.studentId===i);entries[i]={present:a?a.present:null,paid:a?a.paid:false};});
+    draft={gid,sid:s&&s.id,date:base.date,price:Number(base.price)||0,entries,dirty:false};}
+  const d=draft;const list=Object.keys(d.entries).map(id=>studentById(id)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const E=d.entries;const pc=list.filter(x=>E[x.id].present===true).length,ac=list.filter(x=>E[x.id].present===false).length,pd=list.filter(x=>E[x.id].present&&E[x.id].paid).length;
+  return `<div class="topbar"><div class="row"><button class="iconbtn" data-back aria-label="رجوع">${ICON.back}</button>
+   <div class="grow"><div class="ttl">${esc(groupTitle(g))}</div><div class="sub">${esc(groupKind(g))} · ${esc(fmtDate(d.date))}</div></div>
+   <button class="iconbtn" data-act="sessDate" aria-label="تغيير التاريخ"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button></div>
+   <div class="pricebar"><span class="sub" style="color:var(--acd)">سعر الحصة</span><div class="row"><b>${money(d.price)}</b><button class="mini" data-act="sessPrice">تعديل</button></div></div>
+   <div class="counts"><div class="c-ok"><b>${N(pc)}</b> حاضر</div><div class="c-bad"><b>${N(ac)}</b> غايب</div><div class="c-blue"><b>${N(pd)}</b> دفعوا</div></div></div>
+  ${list.length?`<div class="sec" style="padding-top:12px"><span class="hint">${N(list.length-pc-ac)} لسه ما اتعلّمش</span><button class="link" data-act="allPresent">الكل حاضر</button></div>
+  <div class="list">${list.map(x=>{const e=E[x.id];const pcls=e.present===true?'p':e.present===false?'a':'u';const plab=e.present===true?'حاضر':e.present===false?'غايب':'—';
+   return `<div class="srow"><div class="avatar">${esc(x.name.charAt(0))}</div><div class="nm">${esc(x.name)}</div>
+    <button class="tg ${pcls}" data-act="tp" data-id="${x.id}">${plab}</button>
+    <button class="tg ${e.present?(e.paid?'paid':'unpaid'):'ph'}" data-act="tpay" data-id="${x.id}" ${e.present?'':'tabindex="-1" aria-hidden="true"'}>${e.paid?'دفع':'لم يدفع'}</button></div>`;}).join('')}</div>`:
+   `<div class="empty">مفيش طلاب في المجموعة.<button class="btn" data-act="addToGroup" data-id="${gid}">+ إضافة طلاب</button></div>`}
+  <div style="height:110px"></div>
+  <div class="footer"><div class="in"><div class="grow"><div class="l">محصّل الحصة</div><div class="v">${money(pd*d.price)}</div></div><button class="btn" data-act="saveSession">حفظ الحصة</button></div></div>`;}
+
+function vStudents(){const q=ui.sQuery.trim();let sts=activeStudents();if(q)sts=sts.filter(s=>s.name.includes(q)||(s.phone||'').includes(q));
+  sts.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  return `<div class="hdr"><div><div class="sub">${N(activeStudents().length)} طالب</div><h1>الطلاب</h1></div></div>
+  <div class="search"><input id="sq" placeholder="دوّر بالاسم أو الرقم" value="${esc(ui.sQuery)}" aria-label="بحث"><span>${ICON.search}</span></div>
+  ${sts.length?`<div class="list">${sts.map(s=>{const gs=(s.groupIds||[]).map(groupById).filter(g=>g&&!g.archived);const u=unpaidOf(s.id);
+   return `<button class="card" data-go="#student/${s.id}" style="padding:12px 14px"><div class="avatar">${esc(s.name.charAt(0))}</div><div class="grow"><div class="cname">${esc(s.name)}</div>
+   <div class="meta">${gs.length?gs.map(g=>`<span class="chip">${esc(groupTitle(g))}</span>`).join(''):'<span>بدون مجموعة</span>'}</div></div>
+   ${u.length?`<span class="st" style="color:var(--warn)">${money(u.reduce((x,a)=>x+sessionPrice(a),0))}</span>`:''}</button>`;}).join('')}</div>`:
+   `<div class="empty">${q?'مفيش نتايج.':'لسه مفيش طلاب.'}<button class="btn" data-act="newStudent">+ طالب جديد</button></div>`}
+  <button class="fab" data-act="newStudent" aria-label="طالب جديد">${ICON.plus}</button>${tabs('#students')}`;}
+
+function vStudent(id){const s=studentById(id);if(!s)return vMissing();
+  const at=S.attendance.filter(a=>a.studentId===id).sort((a,b)=>b.date.localeCompare(a.date));
+  const pres=at.filter(a=>a.present).length,abs=at.filter(a=>!a.present).length;const un=unpaidOf(id);const unAmt=un.reduce((x,a)=>x+sessionPrice(a),0);
+  const paidAmt=at.filter(a=>a.paid).reduce((x,a)=>x+(Number(a.amount)||0),0);
+  const gs=(s.groupIds||[]).map(groupById).filter(g=>g&&!g.archived);
+  return `<div class="topbar"><div class="row"><button class="iconbtn" data-back aria-label="رجوع">${ICON.back}</button>
+   <div class="avatar">${esc(s.name.charAt(0))}</div><div class="grow"><div class="ttl">${esc(s.name)}</div><div class="sub">${s.phone?`<a href="tel:${esc(s.phone)}" style="color:var(--acd)">${esc(s.phone)}</a>`:'بدون رقم'}</div></div>
+   <button class="iconbtn" data-act="editStudent" data-id="${id}" aria-label="تعديل">${ICON.edit}</button></div>
+   <div class="counts"><div class="c-ok"><b>${N(pres)}</b> حضور</div><div class="c-bad"><b>${N(abs)}</b> غياب</div><div class="c-blue"><b>${N(at.length?Math.round(pres/at.length*100):0)}٪</b> نسبة</div></div></div>
+  ${un.length?`<div style="padding:14px 20px 0"><div class="box" style="margin:0;display:flex;align-items:center;gap:12px;background:var(--warnt)"><div class="grow"><div class="sub" style="color:var(--warn)">عليه ${N(un.length)} حصة مش مدفوعة</div><div style="font-size:20px;font-weight:700;color:var(--warn)">${money(unAmt)}</div></div><button class="btn" data-act="collect" data-id="${id}">تحصيل</button></div></div>`:''}
+  <div class="sec"><h2>المجموعات</h2><button class="link" data-act="editStudent" data-id="${id}">تعديل</button></div>
+  ${gs.length?`<div class="list">${gs.map(g=>`<div class="srow"><button style="all:unset;flex:1;cursor:pointer" data-go="#group/${g.id}"><div class="cname">${esc(groupTitle(g))}</div><div class="meta"><span class="chip">${levelBars(g)} ${esc(groupKind(g))}</span></div></button><button class="mini" style="background:var(--soft)" data-act="move" data-id="${id}" data-g="${g.id}">نقل</button></div>`).join('')}</div>`:'<div class="empty">مش في أي مجموعة.</div>'}
+  <div class="sec"><h2>سجل الحصص</h2><span class="hint">دفع ${money(paidAmt)}</span></div>
+  ${at.length?`<div class="box">${at.slice(0,40).map(a=>`<div class="hist"><span><b style="font-weight:600">${esc(fmtDate(a.date))}</b><div class="hint">${esc(groupTitle(groupById(a.groupId)||{subject:'—'}))}</div></span>
+   <span class="row" style="gap:6px"><span class="chip ${a.present?'ac':''}" style="${a.present?'':'background:var(--badt);color:var(--bad)'}">${a.present?'حاضر':'غايب'}</span>${a.present?`<span class="chip" style="${a.paid?'background:var(--bluet);color:var(--blue)':'background:var(--warnt);color:var(--warn)'}">${a.paid?'دفع':'لم يدفع'}</span>`:''}</span></div>`).join('')}</div>`:'<div class="empty">لسه مفيش حصص.</div>'}
+  ${s.notes?`<div class="sec"><h2>ملاحظات</h2></div><div class="box" style="white-space:pre-line;font-size:14px">${esc(s.notes)}</div>`:''}
+  <div style="height:20px"></div>${tabs('#students')}`;}
+
+function vAccounts(){const now=new Date();if(!ui.month)ui.month=now.getFullYear()+'-'+pad(now.getMonth()+1);const m=ui.month;const [y,mm]=m.split('-').map(Number);
+  const paidIn=S.attendance.filter(a=>a.paid&&a.paidAt&&dkey(new Date(a.paidAt)).startsWith(m));
+  const total=paidIn.reduce((x,a)=>x+(Number(a.amount)||0),0);
+  const bySub={};paidIn.forEach(a=>{const g=groupById(a.groupId);const k=g?g.subject:'أخرى';bySub[k]=(bySub[k]||0)+(Number(a.amount)||0);});
+  const sessM=S.sessions.filter(s=>s.date.startsWith(m)).length;
+  const debtors={};S.attendance.filter(a=>a.present&&!a.paid).forEach(a=>{(debtors[a.studentId]=debtors[a.studentId]||[]).push(a);});
+  const dl=Object.entries(debtors).map(([id,l])=>({s:studentById(id),n:l.length,amt:l.reduce((x,a)=>x+sessionPrice(a),0)})).filter(x=>x.s).sort((a,b)=>b.amt-a.amt);
+  const totalDebt=dl.reduce((x,d)=>x+d.amt,0);
+  return `<div class="hdr"><div><div class="sub">الدخل والمستحقات</div><h1>الحسابات</h1></div></div>
+  <div class="monthnav"><button class="iconbtn" data-act="mPrev" aria-label="الشهر السابق">${ICON.back}</button><b>${MONTHS[mm-1]} ${N(y).replace(/٬/g,'')}</b><button class="iconbtn" data-act="mNext" aria-label="الشهر التالي" style="transform:scaleX(-1)">${ICON.back}</button></div>
+  <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="stat hi"><span class="l">المحصّل في الشهر</span><span class="v">${money(total)}</span></div><div class="stat"><span class="l">عدد الحصص</span><span class="v">${N(sessM)}</span></div></div>
+  ${Object.keys(bySub).length?`<div class="box">${Object.entries(bySub).map(([k,v])=>`<div class="kv"><span>${esc(k)}</span><b>${money(v)}</b></div>`).join('')}</div>`:''}
+  <div class="sec"><h2>مستحقات لم تُدفع</h2><span class="st" style="color:var(--warn)">${money(totalDebt)}</span></div>
+  ${dl.length?`<div class="list">${dl.map(d=>`<div class="srow"><div class="avatar">${esc(d.s.name.charAt(0))}</div><button style="all:unset;flex:1;cursor:pointer" data-go="#student/${d.s.id}"><div class="cname">${esc(d.s.name)}</div><div class="hint">${N(d.n)} حصة · ${money(d.amt)}</div></button><button class="mini" style="background:var(--act)" data-act="collect" data-id="${d.s.id}">تحصيل</button></div>`).join('')}</div>`:'<div class="empty">مفيش مستحقات — كله دافع</div>'}
+  <div style="height:20px"></div>${tabs('#accounts')}`;}
+
+function vSettings(){const lb=S.settings.lastBackup;
+  return `<div class="topbar"><div class="row"><button class="iconbtn" data-back aria-label="رجوع">${ICON.back}</button><div class="ttl grow">الإعدادات</div></div></div>
+  <div class="sec"><h2>النسخ الاحتياطي</h2></div>
+  <div class="box"><p style="margin:0 0 12px;font-size:14px;line-height:1.8;color:var(--ink2)">كل البيانات محفوظة على الموبايل ده بس. اعمل نسخة احتياطية كل أسبوع وابعتها لنفسك على الواتس أو احفظها في الدرايف، علشان لو الموبايل ضاع أو اتمسح ترجّع كل حاجة.</p>
+   <div class="kv"><span>آخر نسخة</span><b>${lb?esc(fmtDate(dkey(new Date(lb)))):'لسه'}</b></div>
+   <div class="acts"><button class="btn" data-act="export">عمل نسخة احتياطية</button><button class="btn sec2" data-act="import">استرجاع نسخة</button></div>
+   <input type="file" id="impFile" accept=".json,application/json" style="display:none"></div>
+  <div class="sec"><h2>عام</h2></div>
+  <div class="box"><div class="fld"><label for="tName">اسم المدرس</label><input id="tName" value="${esc(S.settings.teacherName||'')}" placeholder="بيظهر في الترحيب"></div>
+   <div class="fld" style="margin-bottom:6px"><label for="dPrice">سعر الحصة الافتراضي للمجموعات الجديدة</label><input id="dPrice" type="number" inputmode="numeric" value="${esc(S.settings.defaultPrice||50)}"></div>
+   <button class="btn full" data-act="saveSettings">حفظ</button></div>
+  <div class="sec"><h2>الأرشيف</h2></div>
+  <div class="box">${S.groups.filter(g=>g.archived).map(g=>`<div class="hist"><span>${esc(groupTitle(g))}</span><button class="mini" style="background:var(--act)" data-act="unarchG" data-id="${g.id}">استرجاع</button></div>`).join('')}
+   ${S.students.filter(s=>s.archived).map(s=>`<div class="hist"><span>${esc(s.name)}</span><button class="mini" style="background:var(--act)" data-act="unarchS" data-id="${s.id}">استرجاع</button></div>`).join('')||'<div class="hint">الأرشيف فاضي.</div>'}</div>
+  <p class="hint" style="text-align:center;margin:20px">حصصي · الإصدار ${APP_VERSION}</p>`;}
+function vMissing(){return `<div class="empty" style="margin-top:40px">العنصر ده مش موجود.<button class="btn" data-go="#home">الرئيسية</button></div>`;}
+
+function render(){route=location.hash||'#home';const p=route.slice(1).split('/');let html;
+  switch(p[0]){case'groups':html=vGroups();break;case'group':html=vGroup(p[1]);break;case'session':html=vSession(p[1],p[2]);break;
+   case'students':html=vStudents();break;case'student':html=vStudent(p[1]);break;case'accounts':html=vAccounts();break;case'settings':html=vSettings();break;default:html=vHome();}
+  const y=window.scrollY;app.innerHTML=html;if(render.keep)window.scrollTo(0,y);else window.scrollTo(0,0);render.keep=false;
+  const sq=document.getElementById('sq');if(sq){sq.oninput=()=>{ui.sQuery=sq.value;const pos=sq.selectionStart;render.keep=true;render();const n=document.getElementById('sq');n.focus();n.setSelectionRange(pos,pos);};}
+  const fi=document.getElementById('impFile');if(fi)fi.onchange=()=>importFile(fi.files[0]);}
+const rerenderKeep=()=>{render.keep=true;render();};
+
+/* ================= الأحداث ================= */
+document.addEventListener('click',async e=>{const el=e.target.closest('[data-go],[data-act],[data-back],[data-gf]');if(!el||el.closest('#layer'))return;
+  if(el.dataset.go){go(el.dataset.go);return;}
+  if(el.hasAttribute('data-back')){if(route.startsWith('#session')&&draft&&draft.dirty&&!(await confirmBox('تخرج من غير حفظ؟','التغييرات اللي عملتها في الحصة دي مش هتتحفظ.','خروج',true)))return;
+    if(history.length>1)history.back();else go('#home');return;}
+  if(el.dataset.gf){ui.gFilter=el.dataset.gf;rerenderKeep();return;}
+  const a=el.dataset.act,id=el.dataset.id;
+  switch(a){
+   case'newGroup':groupForm();break;
+   case'editGroup':groupForm(groupById(id));break;
+   case'newStudent':studentForm();break;
+   case'editStudent':studentForm(studentById(id));break;
+   case'addToGroup':addExistingToGroup(id);break;
+   case'move':moveStudent(id,el.dataset.g);break;
+   case'collect':collectFor(id);break;
+   case'tp':{const en=draft.entries[id];en.present=en.present===true?false:true;if(!en.present)en.paid=false;draft.dirty=true;rerenderKeep();break;}
+   case'tpay':{const en=draft.entries[id];if(!en.present)break;en.paid=!en.paid;draft.dirty=true;rerenderKeep();break;}
+   case'allPresent':Object.values(draft.entries).forEach(en=>{en.present=true;});draft.dirty=true;rerenderKeep();break;
+   case'sessPrice':sheet(`<h3>سعر الحصة دي</h3><div class="fld"><label for="pp">السعر (ج.م)</label><input id="pp" type="number" inputmode="numeric" value="${draft.price}"></div><p class="hint" style="margin-top:-6px">التعديل ده للحصة دي بس. لو عاوز تغيّر سعر المجموعة على طول عدّله من صفحة المجموعة.</p><div class="acts"><button class="btn sec2" id="ppc">إلغاء</button><button class="btn" id="ppo">تم</button></div>`,s=>{
+      const i=s.querySelector('#pp');setTimeout(()=>i.select(),200);s.querySelector('#ppc').onclick=closeSheet;s.querySelector('#ppo').onclick=()=>{draft.price=Number(i.value)||0;draft.dirty=true;closeSheet();rerenderKeep();};});break;
+   case'sessDate':sheet(`<h3>تاريخ الحصة</h3><div class="fld"><label for="dd">التاريخ</label><input id="dd" type="date" value="${draft.date}" max="${today()}"></div><div class="acts"><button class="btn sec2" id="ddc">إلغاء</button><button class="btn" id="ddo">تم</button></div>`,s=>{
+      s.querySelector('#ddc').onclick=closeSheet;s.querySelector('#ddo').onclick=()=>{const v=s.querySelector('#dd').value;if(!v)return;
+        const ex=sessionFor(draft.gid,v);if(ex&&ex.id!==draft.sid){closeSheet();toast('في حصة متسجلة في اليوم ده — فتحتهالك');draft=null;go('#session/'+ex.groupId+'/'+ex.id);return;}
+        draft.date=v;draft.dirty=true;closeSheet();rerenderKeep();};});break;
+   case'saveSession':await saveSession();break;
+   case'mPrev':case'mNext':{let [y,m]=ui.month.split('-').map(Number);m+=a==='mPrev'?-1:1;if(m<1){m=12;y--;}if(m>12){m=1;y++;}ui.month=y+'-'+pad(m);rerenderKeep();break;}
+   case'export':await exportData();break;
+   case'import':document.getElementById('impFile').click();break;
+   case'saveSettings':await setSetting('teacherName',document.getElementById('tName').value.trim());await setSetting('defaultPrice',Number(document.getElementById('dPrice').value)||0);toast('اتحفظت الإعدادات');break;
+   case'unarchG':await put('groups',Object.assign({},groupById(id),{archived:false}));toast('اترجعت المجموعة');rerenderKeep();break;
+   case'unarchS':await put('students',Object.assign({},studentById(id),{archived:false}));toast('اترجع الطالب');rerenderKeep();break;
+  }});
+
+async function saveSession(){const d=draft;const ids=Object.keys(d.entries);
+  const unmarked=ids.filter(i=>d.entries[i].present===null&&studentById(i));
+  if(unmarked.length&&!(await confirmBox('في طلاب ما اتعلّموش','عدد '+N(unmarked.length)+' طالب لسه ما اتحددش حضورهم — هيتسجلوا غياب. نكمّل؟','حفظ')))return;
+  const sid=d.sid||uid();const old=S.sessions.find(x=>x.id===sid);
+  const sess={id:sid,groupId:d.gid,date:d.date,price:d.price,createdAt:old?old.createdAt:Date.now(),updatedAt:Date.now()};
+  await put('sessions',sess);
+  const now=Date.now();const prevAtt=attOf(sid);
+  const recs=ids.filter(i=>studentById(i)).map(i=>{const e=d.entries[i];const p=prevAtt.find(x=>x.studentId===i);const present=e.present===true;const paid=present&&e.paid;
+    return {id:sid+'_'+i,sessionId:sid,groupId:d.gid,studentId:i,date:d.date,present,paid,amount:paid?d.price:0,paidAt:paid?(p&&p.paid&&p.paidAt?p.paidAt:now):null};});
+  await putMany('attendance',recs);draft=null;toast('اتحفظت الحصة ✓');
+  history.replaceState(null,'','#group/'+d.gid);render();}
+
+/* ================= النسخ الاحتياطي ================= */
+async function exportData(){const data={app:'hesasy',version:1,exportedAt:new Date().toISOString(),groups:S.groups,students:S.students,sessions:S.sessions,attendance:S.attendance,settings:Object.entries(S.settings).filter(([k])=>k!=='lastBackup').map(([key,value])=>({key,value}))};
+  const name='حصصي-نسخة-'+today()+'.json';const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  let done=false;
+  try{const file=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'نسخة احتياطية — حصصي'});done=true;}}
+  catch(err){if(err&&err.name==='AbortError')return;}
+  if(!done){const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);}
+  await setSetting('lastBackup',Date.now());toast('اتعملت النسخة الاحتياطية');rerenderKeep();}
+async function importFile(f){if(!f)return;let data;try{data=JSON.parse(await f.text());}catch(e){toast('الملف ده مش نسخة صالحة');return;}
+  if(!data||data.app!=='hesasy'){toast('الملف ده مش نسخة من حصصي');return;}
+  const msg='النسخة فيها '+N((data.students||[]).length)+' طالب و'+N((data.groups||[]).length)+' مجموعة. البيانات الحالية على الموبايل هتتستبدل بيها.';
+  if(!(await confirmBox('استرجاع النسخة؟',msg,'استرجاع',true)))return;
+  for(const s of STORES){if(s==='settings')continue;await tx(s,'readwrite',st=>st.clear());await tx(s,'readwrite',st=>{(data[s]||[]).forEach(o=>st.put(o));});}
+  for(const r of (data.settings||[]))await tx('settings','readwrite',st=>st.put(r));
+  await loadAll();toast('اترجعت البيانات ✓');go('#home');}
+
+/* ================= التشغيل ================= */
+const APP_VERSION='1.0.0';
+(async()=>{try{db=await openDB();await loadAll();}catch(e){app.innerHTML='<div class="empty" style="margin-top:40px">حصلت مشكلة في فتح البيانات على الجهاز.<br>'+esc(e&&e.message)+'</div>';return;}
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+  render();
+  if('serviceWorker' in navigator&&location.protocol==='https:'){try{const reg=await navigator.serviceWorker.register('sw.js');
+    reg.addEventListener('updatefound',()=>{const w=reg.installing;w&&w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('في تحديث جديد — اقفل التطبيق وافتحه تاني');});});}catch(e){}}
+})();
+</script>
+</body>
+</html>
